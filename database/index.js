@@ -1,22 +1,27 @@
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
+const { Client } = require('pg');
+const client = new Client({
+  user: 'Phantogram',
   host: 'localhost',
-  user: 'root',
-  database: 'img_carousel',
+  database: 'images',
+  port: 5432,
 });
 
+client.connect();
+
+// client.query(`SELECT imageurl FROM carousel WHERE houseID = ${houseID} LIMIT ${randomNumGenerator(0, houseID)}`
+
 const getAllImages = (houseID, callback) => {
-  connection.query('SELECT imageUrl FROM images WHERE houseID = (?)', [houseID], (err, results) => {
+  console.log(houseID);
+  client.query(`SELECT imageurl FROM carousel WHERE houseid = ${houseID} LIMIT 4`, (err, results) => {
     if (err) {
       callback(err);
     } else {
-      callback(null, results);
+      callback(null, results.rows);
     }
   });
 };
 
 module.exports = {
-  connection,
+  client,
   getAllImages,
 };
